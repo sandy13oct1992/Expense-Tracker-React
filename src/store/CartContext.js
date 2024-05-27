@@ -1,0 +1,11 @@
+import { createContext } from "react";
+
+const CartContext = createContext({
+    token:'',
+    isLoggedIn:false,
+    logIn: (token) =>{},
+    logOut: ()=>{},
+
+});
+
+export default CartContext;

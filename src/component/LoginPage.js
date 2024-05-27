@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext,useRef } from 'react';
 import './Login.css';
+// import axios from 'axios';
+import CartContext from '../store/CartContext';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -7,13 +9,85 @@ const Login = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
 
+  const emailInputRef = useRef();
+  const passInputRef = useRef();
+  const confirmPassInputRef = useRef();
+
+  // const [isLogin, setIsLogin] = useState(true);
+
+  const CartCtx = useContext(CartContext);
+
+  // const loginStateHandler = () => {
+  //   setIsLogin(true);
+  // }
+  const isLogin=CartCtx.isLoggedIn;
+
+  const emailHandler = (e) => {
+    setEmail(e.target.value);
+
+  }
+
+  const passwordHandler = (e) => {
+    setPassword(e.target.value)
+
+  }
+
+  const cpasswordHandler = (e) => {
+    setConfirmPassword(e.target.value)
+
+  }
   const handleLogin = (e) => {
     e.preventDefault();
+    // CartCtx.setIsLogin(true);
     if (password !== confirmPassword) {
       setMessage("Passwords do not match");
       return;
     }
     setMessage("Successful Sign Up");
+
+    // const response = axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyB11tSjRawQDNWk800xbZmpUqe2-t6Qm10')
+    const emailRef = emailInputRef.current.value;
+    const passRef = passInputRef.current.value;
+    const confirmPassRef = confirmPassInputRef.current.value;
+    let url;
+    if (isLogin) {
+      url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyB11tSjRawQDNWk800xbZmpUqe2-t6Qm10'
+    }
+    else {
+      url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyB11tSjRawQDNWk800xbZmpUqe2-t6Qm10'
+
+    } fetch(url, {
+      Method: 'POST',
+      body: JSON.stringify({
+        email: emailRef,
+        pass: passRef,
+        confirmPass: confirmPassRef,
+        returnSecureToken: true,
+      }),
+      headers: {
+        'content-type': 'application/json'
+      }
+
+
+    }).then((res) => {
+      if (res.ok) {
+        res.json();
+      }
+      else {
+        res.json().then((data) => {
+          let errorMessage = 'Authentication failed';
+          alert(errorMessage);
+          throw new Error(errorMessage);
+
+        })
+      }
+    }).then((data) => {
+      CartCtx.logIn(data.idToken)
+      console.log(data);
+    })
+      .catch((err) => {
+        alert(err.message)
+      })
   };
 
   return (
@@ -26,7 +100,8 @@ const Login = () => {
             type="email"
             id="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            ref={emailInputRef}
+            onChange={emailHandler}
             required
           />
         </div>
@@ -36,7 +111,8 @@ const Login = () => {
             type="password"
             id="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            ref={passInputRef}
+            onChange={passwordHandler}
             required
           />
         </div>
@@ -46,11 +122,12 @@ const Login = () => {
             type="password"
             id="confirm-password"
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            ref={confirmPassInputRef}
+            onChange={cpasswordHandler}
             required
           />
         </div>
-        <button type="submit" className="login-button">Login</button>
+        <button type="submit" className="login-button" >Login</button>
       </form>
       {message && <p className="message">{message}</p>}
     </div>

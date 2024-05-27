@@ -1,12 +1,15 @@
 import logo from './logo.svg';
 import './App.css';
 import LoginPage from './component/LoginPage';
+import Header from './component/Header';
+import CartProvider from './store/CartProvider';
 
 function App() {
   return (
-    <div>
+    <CartProvider>
       <LoginPage/>
-    </div>
+      <Header/>
+    </CartProvider>
   );
 }
 
