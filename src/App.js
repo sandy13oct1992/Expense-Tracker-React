@@ -1,15 +1,33 @@
-import logo from './logo.svg';
+// import logo from './logo.svg';
+// import './App.css';
+// import AuthForm from './component/AuthForm';
+// import Header from './component/Header';
+// import CartProvider from './store/CartProvider';
+
+// function App() {
+//   return (
+    
+//     <div>
+//       <AuthForm/>
+//       <Header/>
+//       </div>
+//   );
+// }
+
+// export default App;
+
 import './App.css';
-import LoginPage from './component/LoginPage';
+import AuthForm from './component/AuthForm';
 import Header from './component/Header';
-import CartProvider from './store/CartProvider';
+import Routes from './component/Routes'; // Import your Routes component
 
 function App() {
   return (
-    <CartProvider>
-      <LoginPage/>
-      <Header/>
-    </CartProvider>
+    <div>
+      <Header />
+      <AuthForm />
+      <Routes />
+    </div>
   );
 }
 
